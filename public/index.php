@@ -20,10 +20,23 @@ $router->post('/login', [AuthController::class, 'doLogin']);
 $router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
 // Airline routes
-$router->get('/admin/airlines', [AirlineController::class, 'index']);   // list // show form
+$router->get('/admin/airlines', [AirlineController::class, 'index']);   // list
 $router->post('/admin/airlines/store', [AirlineController::class, 'store']);  // handle form
 $router->post('/admin/airlines/update', [AirlineController::class, 'update']);
 $router->post('/admin/airlines/delete', [AirlineController::class, 'destroy']);
+
+// Aircraft routes
+$router->get('/admin/aircraft', [AircraftController::class, 'index']);   // list
+$router->post('/admin/aircraft/store', [AircraftController::class, 'store']);  // handle form
+$router->post('/admin/aircraft/update', [AircraftController::class, 'update']);
+$router->post('/admin/aircraft/delete', [AircraftController::class, 'destroy']);
+
+// Airport routes
+$router->get('/admin/airports', [AirportController::class, 'index']);   // list/show form
+$router->post('/admin/airports/store', [AirportController::class, 'store']);  // handle form
+$router->post('/admin/airports/update', [AirportController::class, 'update']);
+$router->post('/admin/airports/delete', [AirportController::class, 'destroy']);
+
 
 
 $router->get('/airline/dashboard', [AirlineUserController::class, 'dashboard']);
