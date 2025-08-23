@@ -1,24 +1,20 @@
 <?php
-class Airline {
-    /** @var PDO */
-    private $pdo;
+require_once __DIR__ . '/BaseModel.php';
 
+class Airline extends BaseModel {
     public function __construct($pdo) {
-        // $pdo is your PDO connection from Database::getInstance(...)
-        $this->pdo = $pdo;
+        parent::__construct($pdo, "tblairline");
     }
 
     /**
-     * Basic list with optional filters + paging.
-     * Start simple; you can expand later.
+     * Override all() to keep your custom filtering + paging
      */
     public function all(array $filters = [], int $limit = 100, int $offset = 0, string $orderBy = 'airline_name', string $orderDir = 'ASC'): array {
         $sql = "SELECT id, iata, icao, airline_name, callsign, region, comments
-                FROM tblairline";
+                FROM {$this->table}";
         $where = [];
         $params = [];
 
-        // Optional filters (wire later if you want)
         if (!empty($filters['iata'])) {
             $where[] = "iata LIKE :iata";
             $params[':iata'] = $filters['iata'] . '%';
@@ -44,7 +40,6 @@ class Airline {
             $sql .= " WHERE " . implode(' AND ', $where);
         }
 
-        // Safe sort
         $allowedOrder = ['id','iata','icao','airline_name','callsign','region'];
         if (!in_array($orderBy, $allowedOrder, true)) {
             $orderBy = 'airline_name';
@@ -63,8 +58,11 @@ class Airline {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Count airlines with filters (for pagination)
+     */
     public function count(array $filters = []): int {
-        $sql = "SELECT COUNT(*) FROM tblairline";
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
         $where = [];
         $params = [];
 
@@ -100,5 +98,42 @@ class Airline {
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Insert a new airline
+     */
+    public function create(array $data): bool {
+        $sql = "INSERT INTO {$this->table} (iata, icao, airline_name, callsign, region, comments)
+                VALUES (:iata, :icao, :airline_name, :callsign, :region, :comments)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':iata'         => $data['iata'] ?? null,
+            ':icao'         => $data['icao'] ?? null,
+            ':airline_name' => $data['airline_name'] ?? null,
+            ':callsign'     => $data['callsign'] ?? null,
+            ':region'       => $data['region'] ?? null,
+            ':comments'     => $data['comments'] ?? null,
+        ]);
+    }
+
+    /**
+     * Update an airline
+     */
+    public function update(int $id, array $data): bool {
+        $sql = "UPDATE {$this->table} 
+                   SET iata = :iata, icao = :icao, airline_name = :airline_name, 
+                       callsign = :callsign, region = :region, comments = :comments
+                 WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':id'           => $id,
+            ':iata'         => $data['iata'] ?? null,
+            ':icao'         => $data['icao'] ?? null,
+            ':airline_name' => $data['airline_name'] ?? null,
+            ':callsign'     => $data['callsign'] ?? null,
+            ':region'       => $data['region'] ?? null,
+            ':comments'     => $data['comments'] ?? null,
+        ]);
     }
 }
