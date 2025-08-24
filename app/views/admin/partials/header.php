@@ -36,6 +36,16 @@ $current = $_SERVER['REQUEST_URI'];
                         <i class="bi bi-people me-1"></i>Airline Users
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= str_contains($current, '/admin/flight-routes') ? 'active' : '' ?>" href="/admin/flight-routes">
+                        <i class="bi bi-signpost-2 me-1"></i>Flight Routes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= str_contains($current, '/admin/flight-schedules') ? 'active' : '' ?>" href="/admin/flight-schedules">
+                        <i class="bi bi-calendar-event me-1"></i>Flight Schedules
+                    </a>
+                </li>
             </ul>
 
             <!-- Profile Dropdown -->

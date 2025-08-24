@@ -5,7 +5,7 @@
  */
 function renderFilterSidebar(string $action, array $fields) {
 ?>
-<form id="filterForm" method="get" action="<?= htmlspecialchars($action) ?>" class="h-100 d-flex flex-column">
+<form id="filterForm" method="get" action="<?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8') ?>" class="h-100 d-flex flex-column">
     <div class="flex-grow-1">
         <?php foreach ($fields as $field): 
             $name = $field['name'];
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     input.value = "";
                 }
             });
-            window.location.href = "<?= strtok($_SERVER['REQUEST_URI'], '?') ?>";
+            window.location.href = this.closest('form').action;
         });
     }
 });
