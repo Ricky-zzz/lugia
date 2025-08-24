@@ -94,7 +94,7 @@ class AirlineUserController extends Controller
     /** Airline User Dashboard (untouched) */
     public function dashboard()
     {
-        echo "Reached Admin Dashboard!";
+        $this->view("airline/dashboard");
         exit;
     }
 }

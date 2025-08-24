@@ -8,6 +8,14 @@ class AirlineUser extends BaseModel
         parent::__construct($pdo, "tblairlineuser");
     }
 
+    public function findByUsername(string $username): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE user = :user LIMIT 1");
+        $stmt->execute([':user' => $username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: null;
+    }
+
     /**
      * Fetch all airline users (with airline name via JOIN)
      */

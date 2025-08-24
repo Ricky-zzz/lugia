@@ -112,46 +112,46 @@ class FlightRoute extends BaseModel
     /**
      * Count flight routes
      */
-public function count($filters = [])
-{
-    $sql = "SELECT COUNT(*) as count
+    public function count($filters = [])
+    {
+        $sql = "SELECT COUNT(*) as count
             FROM {$this->table} fr
             LEFT JOIN tblairline a ON fr.aid = a.id
             LEFT JOIN tblairport ao ON fr.oapid = ao.id
             LEFT JOIN tblairport ad ON fr.dapid = ad.id
             LEFT JOIN tblaircraft ac ON fr.acid = ac.id
             WHERE 1=1";
-    $params = [];
+        $params = [];
 
-    if (!empty($filters['id'])) {
-        $sql .= " AND fr.id = :id";
-        $params[':id'] = $filters['id'];
-    }
-    if (!empty($filters['aid'])) {
-        $sql .= " AND fr.aid = :aid";
-        $params[':aid'] = $filters['aid'];
-    }
-    if (!empty($filters['oapid'])) {
-        $sql .= " AND fr.oapid = :oapid";
-        $params[':oapid'] = $filters['oapid'];
-    }
-    if (!empty($filters['dapid'])) {
-        $sql .= " AND fr.dapid = :dapid";
-        $params[':dapid'] = $filters['dapid'];
-    }
-    if (!empty($filters['acid'])) {
-        $sql .= " AND fr.acid = :acid";
-        $params[':acid'] = $filters['acid'];
-    }
-    if (isset($filters['round_trip']) && $filters['round_trip'] !== '') {
-        $sql .= " AND fr.round_trip = :round_trip";
-        $params[':round_trip'] = $filters['round_trip'];
-    }
+        if (!empty($filters['id'])) {
+            $sql .= " AND fr.id = :id";
+            $params[':id'] = $filters['id'];
+        }
+        if (!empty($filters['aid'])) {
+            $sql .= " AND fr.aid = :aid";
+            $params[':aid'] = $filters['aid'];
+        }
+        if (!empty($filters['oapid'])) {
+            $sql .= " AND fr.oapid = :oapid";
+            $params[':oapid'] = $filters['oapid'];
+        }
+        if (!empty($filters['dapid'])) {
+            $sql .= " AND fr.dapid = :dapid";
+            $params[':dapid'] = $filters['dapid'];
+        }
+        if (!empty($filters['acid'])) {
+            $sql .= " AND fr.acid = :acid";
+            $params[':acid'] = $filters['acid'];
+        }
+        if (isset($filters['round_trip']) && $filters['round_trip'] !== '') {
+            $sql .= " AND fr.round_trip = :round_trip";
+            $params[':round_trip'] = $filters['round_trip'];
+        }
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
-}
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    }
 
 
 
@@ -203,4 +203,36 @@ public function count($filters = [])
         $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
+    /**
+     * Find a single flight route by ID
+     */
+    public function find(int $id): ?array
+    {
+        $sql = "SELECT 
+               fr.id,
+               fr.aid,
+               fr.oapid,
+               fr.dapid,
+               fr.round_trip,
+               fr.acid,
+               a.airline_name,
+               ao.airport_name AS origin_airport,
+               ao.iata AS origin_iata,
+               ad.airport_name AS destination_airport,
+               ad.iata AS destination_iata,
+               ac.model AS aircraft_model
+            FROM {$this->table} fr
+            LEFT JOIN tblairline a ON fr.aid = a.id
+            LEFT JOIN tblairport ao ON fr.oapid = ao.id
+            LEFT JOIN tblairport ad ON fr.dapid = ad.id
+            LEFT JOIN tblaircraft ac ON fr.acid = ac.id
+            WHERE fr.id = :id
+            LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
+
 }
