@@ -1,4 +1,4 @@
-<?php include __DIR__ . '/../../airline/partials/head.php'; ?>
+<?php include __DIR__ . '/../../user/partials/head.php'; ?>
 
 <body>
 <div class="d-flex flex-column vh-100 w-100 overflow-hidden">

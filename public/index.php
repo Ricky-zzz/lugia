@@ -35,6 +35,13 @@ $router->post('/admin/aircraft/store', [AircraftController::class, 'store']);
 $router->post('/admin/aircraft/update', [AircraftController::class, 'update']);
 $router->post('/admin/aircraft/delete', [AircraftController::class, 'destroy']);
 
+// User routes (Admin)
+$router->get('/admin/users', [UserController::class, 'index']);
+$router->post('/admin/users/store', [UserController::class, 'store']);
+$router->post('/admin/users/update', [UserController::class, 'update']);
+$router->post('/admin/users/delete', [UserController::class, 'destroy']);
+
+
 // Airport routes (Admin)
 $router->get('/admin/airports', [AirportController::class, 'index']);
 $router->post('/admin/airports/store', [AirportController::class, 'store']);
