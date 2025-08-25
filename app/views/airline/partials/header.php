@@ -6,7 +6,7 @@ $current = $_SERVER['REQUEST_URI'];
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <!-- Brand -->
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">Lugia</a>
+        <a class="navbar-brand fw-bold" href="/airline/dashboard">Lugia</a>
 
         <!-- Toggler for mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -17,32 +17,12 @@ $current = $_SERVER['REQUEST_URI'];
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/airlines') ? 'active' : '' ?>" href="/admin/airlines">
-                        <i class="bi bi-airplane me-1"></i>Airline
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/aircraft') ? 'active' : '' ?>" href="/admin/aircraft">
-                        <i class="bi bi-airplane-fill me-1"></i>Aircraft
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/airports') ? 'active' : '' ?>" href="/admin/airports">
-                        <i class="bi bi-building me-1"></i>Airport
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/airline-users') ? 'active' : '' ?>" href="/admin/airline-users">
-                        <i class="bi bi-people me-1"></i>Airline Users
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/flight-routes') ? 'active' : '' ?>" href="/admin/flight-routes">
+                    <a class="nav-link <?= str_contains($current, '/airline/flight-routes') ? 'active' : '' ?>" href="/airline/flight-routes">
                         <i class="bi bi-signpost-2 me-1"></i>Flight Routes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= str_contains($current, '/admin/flight-schedules') ? 'active' : '' ?>" href="/admin/flight-schedules">
+                    <a class="nav-link <?= str_contains($current, '/airline/flight-schedules') ? 'active' : '' ?>" href="/airline/flight-schedules">
                         <i class="bi bi-calendar-event me-1"></i>Flight Schedules
                     </a>
                 </li>
