@@ -35,6 +35,13 @@ $router->post('/admin/aircraft/store', [AircraftController::class, 'store']);
 $router->post('/admin/aircraft/update', [AircraftController::class, 'update']);
 $router->post('/admin/aircraft/delete', [AircraftController::class, 'destroy']);
 
+// User routes (Admin)
+$router->get('/admin/users', [UserController::class, 'index']);
+$router->post('/admin/users/store', [UserController::class, 'store']);
+$router->post('/admin/users/update', [UserController::class, 'update']);
+$router->post('/admin/users/delete', [UserController::class, 'destroy']);
+
+
 // Airport routes (Admin)
 $router->get('/admin/airports', [AirportController::class, 'index']);
 $router->post('/admin/airports/store', [AirportController::class, 'store']);
@@ -59,8 +66,6 @@ $router->post('/admin/flight-schedules/store', [FlightScheduleController::class,
 $router->post('/admin/flight-schedules/update', [FlightScheduleController::class, 'update']);
 $router->post('/admin/flight-schedules/delete', [FlightScheduleController::class, 'destroy']);
 
-
-
 // Airline User Dashboard
 $router->get('/airline/dashboard', [AirlineUserController::class, 'dashboard']);
 
@@ -77,8 +82,8 @@ $router->post('/airline/flight-schedules/update', [AFScheduleController::class, 
 $router->post('/airline/flight-schedules/delete', [AFScheduleController::class, 'destroy']);
 
 // Public User
-$router->get('/user/home', [UserController::class, 'home']);
-$router->get('/flights', [UserController::class, 'flights']);
-$router->get('/routes', [UserController::class, 'routes']);
+$router->get('/user/dashboard', [UserController::class, 'dashboard']);
+$router->get('/user/flight-routes', [UserFlightRouteController::class, 'index']);
+$router->get('/user/flight-schedules', [UFScheduleController::class, 'index']);
 
 $router->resolve();
