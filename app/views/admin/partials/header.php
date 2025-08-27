@@ -71,10 +71,55 @@ $current = $_SERVER['REQUEST_URI'];
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                    <!-- Import Data trigger -->
+                    <li>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <i class="bi bi-upload me-2"></i>Import Data
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
                     </li>
                 </ul>
             </div>
+
         </div>
     </div>
 </nav>
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="/admin/import" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="import_table" class="form-label">Select Table</label>
+                            <select class="form-select" id="import_table" name="table" required>
+                                <option value="">-- Select Table --</option>
+                                <option value="aircraft">Aircraft</option>
+                                <option value="airline">Airline</option>
+                                <option value="airport">Airport</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="import_csv" class="form-label">CSV File</label>
+                            <input type="file" class="form-control" id="import_csv" name="csv_file" accept=".csv"
+                                required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

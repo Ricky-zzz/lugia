@@ -86,4 +86,7 @@ $router->get('/user/dashboard', [UserController::class, 'dashboard']);
 $router->get('/user/flight-routes', [UserFlightRouteController::class, 'index']);
 $router->get('/user/flight-schedules', [UFScheduleController::class, 'index']);
 
+$router->post('/admin/import', [ImportController::class, 'import']);
+
+
 $router->resolve();
