@@ -8,6 +8,12 @@ class AuthController extends Controller
         $this->view("auth/login", compact('title'));
     }
 
+    public function register()
+    {
+        $title = "Register - Lugia";
+        $this->view("auth/register", compact('title'));
+    }
+
     public function doLogin()
     {
         session_start();
@@ -51,6 +57,57 @@ class AuthController extends Controller
         header('Location: /');
         exit;
     }
+
+    public function doRegister()
+    {
+        session_start();
+
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirmPassword'] ?? '';
+
+        // Basic validation
+        if ($username === '' || $password === '' || $confirmPassword === '') {
+            $_SESSION['error'] = "All fields are required.";
+            header('Location: /register');
+            exit;
+        }
+
+        // check password match
+        if ($password !== $confirmPassword) {
+            $_SESSION['error'] = "Passwords do not match.";
+            header('Location: /register');
+            exit;
+        }
+
+        $userModel = new User($GLOBALS['db']);
+
+        // check if username already exists
+        if ($userModel->findByUsername($username)) {
+            $_SESSION['error'] = "Username already taken.";
+            header('Location: /register');
+            exit;
+        }
+
+        // create user with default role "user"
+        $created = $userModel->create([
+            'user' => $username,
+            'pass' => $password,  // plain text for now
+            'role' => 'user'
+        ]);
+
+        if ($created) {
+            $_SESSION['success'] = "Registration successful. Please login.";
+            header('Location: /');
+            exit;
+        } else {
+            $_SESSION['error'] = "Failed to register. Please try again.";
+            header('Location: /register');
+            exit;
+        }
+    }
+
+
     public function logout()
     {
         session_start();           // Make sure session is started

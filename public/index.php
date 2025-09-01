@@ -19,6 +19,8 @@ $router = new Router();
 $router->get('/', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'doLogin']);
 $router->get('/logout', [AuthController::class, 'logout']);
+$router->get('/register', [AuthController::class, 'register']);
+$router->post('/doRegister', [AuthController::class, 'doRegister']);
 
 // Admin Dashboard
 $router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
