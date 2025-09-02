@@ -21,11 +21,13 @@ $current = $_SERVER['REQUEST_URI'];
                         <i class="bi bi-signpost-2 me-1"></i>Flight Routes
                     </a>
                 </li>
+                <!--
                 <li class="nav-item">
                     <a class="nav-link <?= str_contains($current, '/airline/flight-schedules') ? 'active' : '' ?>" href="/airline/flight-schedules">
                         <i class="bi bi-calendar-event me-1"></i>Flight Schedules
                     </a>
                 </li>
+                -->
             </ul>
 
             <!-- Profile Dropdown -->

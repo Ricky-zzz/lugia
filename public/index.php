@@ -77,11 +77,18 @@ $router->post('/airline/flight-routes/store', [AirlineFlightRouteController::cla
 $router->post('/airline/flight-routes/update', [AirlineFlightRouteController::class, 'update']);
 $router->post('/airline/flight-routes/delete', [AirlineFlightRouteController::class, 'destroy']);
 
+
+// Flight Route Schedules (Airline User)
+$router->get('/airline/flight-routes/schedules', [RouteScheduleController::class, 'index']);
+$router->post('/airline/flight-routes/schedules/store', [RouteScheduleController::class, 'store']);
+$router->post('/airline/flight-routes/schedules/update', [RouteScheduleController::class, 'update']);
+$router->post('/airline/flight-routes/schedules/delete', [RouteScheduleController::class, 'destroy']);
+
 // Flight Schedules (Airline User)
-$router->get('/airline/flight-schedules', [AFScheduleController::class, 'index']);
-$router->post('/airline/flight-schedules/store', [AFScheduleController::class, 'store']);
-$router->post('/airline/flight-schedules/update', [AFScheduleController::class, 'update']);
-$router->post('/airline/flight-schedules/delete', [AFScheduleController::class, 'destroy']);
+// $router->get('/airline/flight-schedules', [AFScheduleController::class, 'index']);
+// $router->post('/airline/flight-schedules/store', [AFScheduleController::class, 'store']);
+// $router->post('/airline/flight-schedules/update', [AFScheduleController::class, 'update']);
+// $router->post('/airline/flight-schedules/delete', [AFScheduleController::class, 'destroy']);
 
 // Public User
 $router->get('/user/dashboard', [UserController::class, 'dashboard']);

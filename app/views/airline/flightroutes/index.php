@@ -2,7 +2,7 @@
 $aid = $_SESSION['aid'] ?? null;
 
 $routeFields = [
-    
+
     ['oapid', 'Origin Airport', 'select', array_column($airports, 'airport_name', 'id')],
     ['dapid', 'Destination Airport', 'select', array_column($airports, 'airport_name', 'id')],
     ['acid', 'Aircraft', 'select', array_column($aircrafts, 'model', 'id')],
@@ -80,13 +80,17 @@ $routeFields = [
                                                             data-bs-target="#editRouteModal_<?= $row['id'] ?>">
                                                             <i class="bi bi-pencil"></i>
                                                         </button>
-                                                        <form action="/airline/flight-routes/delete?id=<?= $row['id'] ?>" method="post"
-                                                            class="d-inline">
+                                                        <form action="/airline/flight-routes/delete?id=<?= $row['id'] ?>"
+                                                            method="post" class="d-inline">
                                                             <button class="btn btn-sm btn-outline-danger" title="Delete"
                                                                 onclick="return confirm('Delete this flight route?')">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
+                                                        <a href="/airline/flight-routes/schedules?frid=<?= $row['id'] ?>"
+                                                            class="btn btn-sm btn-outline-success" title="Manage Schedules">
+                                                            <i class="bi bi-airplane"></i>
+                                                        </a>
 
                                                         <?php
                                                         // Generate edit modal ONLY if airline owns this row
