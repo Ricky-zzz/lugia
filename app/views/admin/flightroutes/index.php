@@ -53,7 +53,6 @@ $routeFields = [
                             <table class="table table-hover table-striped align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Origin</th>
                                         <th>Destination</th>
                                         <th>Airline</th>
@@ -66,7 +65,6 @@ $routeFields = [
                                     <?php if (!empty($routes)): ?>
                                         <?php foreach ($routes as $row): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($row['id']) ?></td>
                                                 <td><?= htmlspecialchars($row['origin_airport']) ?>
                                                     (<?= htmlspecialchars($row['origin_iata']) ?>)</td>
                                                 <td><?= htmlspecialchars($row['destination_airport']) ?>

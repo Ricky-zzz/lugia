@@ -1,8 +1,18 @@
 <?php
 // Flight Schedule fields for add/edit modals
 $scheduleFields = [
-    ['auid', 'Schedule Created By', 'select', array_column($airlineUsers ?? [], 'user', 'id')], // for add/edit
-    ['frid', 'Flight Route', 'select', array_column($flightRoutes ?? [], 'id', 'id')],
+    ['auid', 'Schedule Created By', 'select', array_column($airlineUsers ?? [], 'user', 'id')],
+    [
+        'frid',
+        'Flight Route',
+        'select',
+        array_reduce($flightRoutes ?? [], function ($carry, $route) {
+            $carry[$route['id']] = "{$route['airline_name']} ({$route['origin_airport']} - {$route['destination_airport']})";
+
+            return $carry;
+        }, [])
+    ],
+
     ['date_departure', 'Departure Date', 'date'],
     ['time_departure', 'Departure Time', 'time'],
     ['date_arrival', 'Arrival Date', 'date'],
@@ -18,7 +28,11 @@ $scheduleFields = [
             'arrived' => 'Arrived'
         ]
     ],
+    ['first_price', 'First Class Price', 'number'],
+    ['business_price', 'Business Price', 'number'],
+    ['economy_price', 'Economy Price', 'number'],
 ];
+
 ?>
 
 <?php include __DIR__ . '/../../admin/partials/head.php'; ?>
@@ -37,9 +51,7 @@ $scheduleFields = [
                         include __DIR__ . '/../../admin/partials/filter.php';
                         // **Changed filter for Created By** to type=text so user can input a name
                         renderFilterSidebar('/admin/flight-schedules', [
-                            ['name' => 'id', 'label' => 'Schedule ID', 'placeholder' => 'Enter schedule ID'],
-                            ['name' => 'schedule_user', 'label' => 'Created By', 'placeholder' => 'Enter user name'],
-                            ['name' => 'frid', 'label' => 'Flight Route', 'type' => 'select', 'options' => array_column($flightRoutes ?? [], 'id', 'id')],
+
                             ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['scheduled' => 'Scheduled', 'delayed' => 'Delayed', 'cancelled' => 'Cancelled', 'arrived' => 'Arrived']],
                             ['name' => 'date_departure_from', 'label' => 'Departure From', 'type' => 'date'],
                             ['name' => 'date_departure_to', 'label' => 'Departure To', 'type' => 'date'],
@@ -67,35 +79,39 @@ $scheduleFields = [
                             <table class="table table-hover table-striped align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Created By</th>
-                                        <th>Flight Route</th>
                                         <th>Airline</th>
                                         <th>Origin</th>
                                         <th>Destination</th>
                                         <th>Departure</th>
                                         <th>Arrival</th>
                                         <th>Status</th>
+                                        <th>First Class</th>
+                                        <th>Business</th>
+                                        <th>Economy</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     <?php if (!empty($schedules)): ?>
                                         <?php foreach ($schedules as $row): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($row['id']) ?></td>
-                                                <td><?= htmlspecialchars($row['schedule_user']) ?></td>
-                                                <td><?= htmlspecialchars($row['frid']) ?></td>
                                                 <td><?= htmlspecialchars($row['airline_name']) ?></td>
                                                 <td><?= htmlspecialchars($row['origin_airport']) ?>
                                                     (<?= htmlspecialchars($row['origin_iata']) ?>)</td>
                                                 <td><?= htmlspecialchars($row['destination_airport']) ?>
                                                     (<?= htmlspecialchars($row['destination_iata']) ?>)</td>
                                                 <td><?= htmlspecialchars($row['date_departure']) ?>
-                                                    <?= htmlspecialchars($row['time_departure']) ?></td>
+                                                    <?= htmlspecialchars($row['time_departure']) ?>
+                                                </td>
                                                 <td><?= htmlspecialchars($row['date_arrival']) ?>
-                                                    <?= htmlspecialchars($row['time_arrival']) ?></td>
+                                                    <?= htmlspecialchars($row['time_arrival']) ?>
+                                                </td>
                                                 <td><?= htmlspecialchars(ucfirst($row['status'])) ?></td>
+                                                <td>₱<?= number_format($row['first_price'], 2) ?></td>
+                                                <td>₱<?= number_format($row['business_price'], 2) ?></td>
+                                                <td>₱<?= number_format($row['economy_price'], 2) ?></td>
+
                                                 <td>
                                                     <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
                                                         data-bs-target="#editScheduleModal_<?= $row['id'] ?>">
@@ -108,6 +124,10 @@ $scheduleFields = [
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
+                                                    <a href="/admin/flight-schedules/seats?fid=<?= $row['id'] ?>"
+                                                        class="btn btn-sm btn-outline-warning">
+                                                        <i class="bi bi-ticket"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
 
@@ -126,6 +146,9 @@ $scheduleFields = [
                                                 'date_arrival' => $row['date_arrival'],
                                                 'time_arrival' => $row['time_arrival'],
                                                 'status' => $row['status'],
+                                                'first_price' => $row['first_price'],
+                                                'business_price' => $row['business_price'],
+                                                'economy_price' => $row['economy_price'],
                                             ];
                                             include __DIR__ . '/../../admin/partials/modal_form.php';
                                             ?>

@@ -52,7 +52,6 @@ $routeFields = [
                             <table class="table table-hover table-striped align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Origin</th>
                                         <th>Destination</th>
                                         <th>Airline</th>
@@ -65,7 +64,6 @@ $routeFields = [
                                     <?php if (!empty($routes)): ?>
                                         <?php foreach ($routes as $row): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($row['id']) ?></td>
                                                 <td><?= htmlspecialchars($row['origin_airport']) ?>
                                                     (<?= htmlspecialchars($row['origin_iata']) ?>)</td>
                                                 <td><?= htmlspecialchars($row['destination_airport']) ?>
@@ -73,46 +71,43 @@ $routeFields = [
                                                 <td><?= htmlspecialchars($row['airline_name']) ?></td>
                                                 <td><?= htmlspecialchars($row['aircraft_model']) ?></td>
                                                 <td><?= ($row['round_trip'] ?? 0) ? 'Yes' : 'No' ?></td>
-                                                <td>
-                                                    <?php if ($row['aid'] == $aid): ?>
-                                                        <!-- Edit + Delete only if same airline -->
-                                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                                            data-bs-target="#editRouteModal_<?= $row['id'] ?>">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </button>
-                                                        <form action="/airline/flight-routes/delete?id=<?= $row['id'] ?>"
-                                                            method="post" class="d-inline">
-                                                            <button class="btn btn-sm btn-outline-danger" title="Delete"
-                                                                onclick="return confirm('Delete this flight route?')">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                        <a href="/airline/flight-routes/schedules?frid=<?= $row['id'] ?>"
-                                                            class="btn btn-sm btn-outline-success" title="Manage Schedules">
-                                                            <i class="bi bi-airplane"></i>
-                                                        </a>
 
-                                                        <?php
-                                                        // Generate edit modal ONLY if airline owns this row
-                                                        $modalId = "editRouteModal_" . $row['id'];
-                                                        $title = "Edit Flight Route";
-                                                        $action = "/airline/flight-routes/update";
-                                                        $fields = $routeFields;
-                                                        $values = [
-                                                            'id' => $row['id'],
-                                                            'aid' => $row['aid'], // still hidden
-                                                            'oapid' => $row['oapid'],
-                                                            'dapid' => $row['dapid'],
-                                                            'acid' => $row['acid'],
-                                                            'round_trip' => $row['round_trip'],
-                                                        ];
-                                                        include __DIR__ . '/../../airline/partials/modal_form.php';
-                                                        ?>
-                                                    <?php else: ?>
-                                                        <!-- Others can see but not edit -->
-                                                        <span class="text-muted">Read-only</span>
-                                                    <?php endif; ?>
+                                                <td>
+                                                    <!-- Edit + Delete since all rows are from same airline -->
+                                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#editRouteModal_<?= $row['id'] ?>">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <form action="/airline/flight-routes/delete?id=<?= $row['id'] ?>"
+                                                        method="post" class="d-inline">
+                                                        <button class="btn btn-sm btn-outline-danger" title="Delete"
+                                                            onclick="return confirm('Delete this flight route?')">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                    <a href="/airline/flight-routes/schedules?frid=<?= $row['id'] ?>"
+                                                        class="btn btn-sm btn-outline-success" title="Manage Schedules">
+                                                        <i class="bi bi-airplane"></i>
+                                                    </a>
+
+                                                    <?php
+                                                    // Generate edit modal
+                                                    $modalId = "editRouteModal_" . $row['id'];
+                                                    $title = "Edit Flight Route";
+                                                    $action = "/airline/flight-routes/update";
+                                                    $fields = $routeFields;
+                                                    $values = [
+                                                        'id' => $row['id'],
+                                                        'aid' => $row['aid'],
+                                                        'oapid' => $row['oapid'],
+                                                        'dapid' => $row['dapid'],
+                                                        'acid' => $row['acid'],
+                                                        'round_trip' => $row['round_trip'],
+                                                    ];
+                                                    include __DIR__ . '/../../airline/partials/modal_form.php';
+                                                    ?>
                                                 </td>
+
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>

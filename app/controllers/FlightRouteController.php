@@ -20,7 +20,7 @@ class FlightRouteController extends Controller
     public function index()
     {
         $filters = [
-            'id' => $_GET['id'] ?? '',   // ✅ added this
+            'id' => $_GET['id'] ?? '',   
             'aid' => $_GET['aid'] ?? '',
             'oapid' => $_GET['oapid'] ?? '',
             'dapid' => $_GET['dapid'] ?? '',
@@ -33,11 +33,10 @@ class FlightRouteController extends Controller
         $routes = $this->flightRouteModel->all($filters);
 
         // Debug output
-        echo "<!-- Debug: Number of routes found: " . count($routes) . " -->\n";
-        echo "<!-- Debug: SQL Query: " . $this->flightRouteModel->getLastQuery() . " -->\n";
+
 
         $total = $this->flightRouteModel->count($filters);
-        echo "<!-- Debug: Total count: " . $total . " -->\n";
+
 
         // dropdown data
         $airlines = $this->airlineModel->all();

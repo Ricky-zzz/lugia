@@ -22,6 +22,9 @@ class FlightSchedule extends BaseModel
                     fs.date_arrival,
                     fs.time_arrival,
                     fs.status,
+                    fs.first_price, 
+                    fs.business_price, 
+                    fs.economy_price,
                     au.user AS schedule_user,
                     fr.aid AS airline_id,
                     a.airline_name,
@@ -168,52 +171,56 @@ class FlightSchedule extends BaseModel
         return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
     }
 
-    /**
-     * Create flight schedule
-     */
-    public function create(array $data): bool
-    {
-        $sql = "INSERT INTO {$this->table} 
-                (auid, frid, date_departure, time_departure, date_arrival, time_arrival, status)
-                VALUES (:auid, :frid, :date_departure, :time_departure, :date_arrival, :time_arrival, :status)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':auid' => $data['auid'] ?? null,
-            ':frid' => $data['frid'] ?? null,
-            ':date_departure' => $data['date_departure'] ?? null,
-            ':time_departure' => $data['time_departure'] ?? null,
-            ':date_arrival' => $data['date_arrival'] ?? null,
-            ':time_arrival' => $data['time_arrival'] ?? null,
-            ':status' => $data['status'] ?? 'scheduled'
-        ]);
-    }
+public function create(array $data): bool
+{
+    $sql = "INSERT INTO {$this->table} 
+            (auid, frid, date_departure, time_departure, date_arrival, time_arrival, status, first_price, business_price, economy_price)
+            VALUES (:auid, :frid, :date_departure, :time_departure, :date_arrival, :time_arrival, :status, :first_price, :business_price, :economy_price)";
+    $stmt = $this->pdo->prepare($sql);
+    return $stmt->execute([
+        ':auid' => $data['auid'] ?? null,
+        ':frid' => $data['frid'] ?? null,
+        ':date_departure' => $data['date_departure'] ?? null,
+        ':time_departure' => $data['time_departure'] ?? null,
+        ':date_arrival' => $data['date_arrival'] ?? null,
+        ':time_arrival' => $data['time_arrival'] ?? null,
+        ':status' => $data['status'] ?? 'scheduled',
+        ':first_price' => $data['first_price'] ?? null,
+        ':business_price' => $data['business_price'] ?? null,
+        ':economy_price' => $data['economy_price'] ?? null
+    ]);
+}
 
-    /**
-     * Update flight schedule
-     */
-    public function update(int $id, array $data): bool
-    {
-        $sql = "UPDATE {$this->table} SET 
-                    auid = :auid,
-                    frid = :frid,
-                    date_departure = :date_departure,
-                    time_departure = :time_departure,
-                    date_arrival = :date_arrival,
-                    time_arrival = :time_arrival,
-                    status = :status
-                WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':id' => $id,
-            ':auid' => $data['auid'] ?? null,
-            ':frid' => $data['frid'] ?? null,
-            ':date_departure' => $data['date_departure'] ?? null,
-            ':time_departure' => $data['time_departure'] ?? null,
-            ':date_arrival' => $data['date_arrival'] ?? null,
-            ':time_arrival' => $data['time_arrival'] ?? null,
-            ':status' => $data['status'] ?? 'scheduled'
-        ]);
-    }
+public function update(int $id, array $data): bool
+{
+    $sql = "UPDATE {$this->table} SET 
+                auid = :auid,
+                frid = :frid,
+                date_departure = :date_departure,
+                time_departure = :time_departure,
+                date_arrival = :date_arrival,
+                time_arrival = :time_arrival,
+                status = :status,
+                first_price = :first_price,
+                business_price = :business_price,
+                economy_price = :economy_price
+            WHERE id = :id";
+    $stmt = $this->pdo->prepare($sql);
+    return $stmt->execute([
+        ':id' => $id,
+        ':auid' => $data['auid'] ?? null,
+        ':frid' => $data['frid'] ?? null,
+        ':date_departure' => $data['date_departure'] ?? null,
+        ':time_departure' => $data['time_departure'] ?? null,
+        ':date_arrival' => $data['date_arrival'] ?? null,
+        ':time_arrival' => $data['time_arrival'] ?? null,
+        ':status' => $data['status'] ?? 'scheduled',
+        ':first_price' => $data['first_price'] ?? null,
+        ':business_price' => $data['business_price'] ?? null,
+        ':economy_price' => $data['economy_price'] ?? null
+    ]);
+}
+
 
     /**
      * Delete flight schedule
@@ -238,6 +245,9 @@ class FlightSchedule extends BaseModel
                     fs.date_arrival,
                     fs.time_arrival,
                     fs.status,
+                    fs.first_price, 
+                    fs.business_price, 
+                    fs.economy_price,
                     au.user AS schedule_user,
                     fr.aid AS airline_id,
                     a.airline_name,
@@ -262,5 +272,33 @@ class FlightSchedule extends BaseModel
 
         return $result ?: null;
     }
+
+    public function createAndGetId(array $data): ?int
+{
+    $sql = "INSERT INTO {$this->table} 
+            (auid, frid, date_departure, time_departure, date_arrival, time_arrival, status, first_price, business_price, economy_price)
+            VALUES (:auid, :frid, :date_departure, :time_departure, :date_arrival, :time_arrival, :status, :first_price, :business_price, :economy_price)";
+    
+    $stmt = $this->pdo->prepare($sql);
+    $success = $stmt->execute([
+        ':auid' => $data['auid'] ?? null,
+        ':frid' => $data['frid'] ?? null,
+        ':date_departure' => $data['date_departure'] ?? null,
+        ':time_departure' => $data['time_departure'] ?? null,
+        ':date_arrival' => $data['date_arrival'] ?? null,
+        ':time_arrival' => $data['time_arrival'] ?? null,
+        ':status' => $data['status'] ?? 'scheduled',
+        ':first_price' => $data['first_price'] ?? null,
+        ':business_price' => $data['business_price'] ?? null,
+        ':economy_price' => $data['economy_price'] ?? null
+    ]);
+
+    if ($success) {
+        return (int)$this->pdo->lastInsertId();
+    }
+
+    return null;
+}
+
 
 }

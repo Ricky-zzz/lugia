@@ -1,10 +1,9 @@
 <?php
 $aid = $_SESSION['aid'] ?? null;
 $frid = $_POST['frid'] ?? $_GET['frid'] ?? $_SESSION['current_frid'] ?? null;
-
-
-// Flight Schedule fields for add/edit modals
 $scheduleFields = [
+    ['auid', '', 'hidden', []],
+    ['frid', '', 'hidden', []],
 
     ['date_departure', 'Departure Date', 'date'],
     ['time_departure', 'Departure Time', 'time'],
@@ -18,13 +17,17 @@ $scheduleFields = [
             'scheduled' => 'Scheduled',
             'delayed' => 'Delayed',
             'cancelled' => 'Cancelled',
-            'arrived' => 'Arrived'
+            'arrived' => 'Arrived',
         ]
     ],
-    ['frid', '', 'hidden', []],  // Change this line
+    ['first_price', 'First Class Price (₱)', 'number'],
+    ['business_price', 'Business Price (₱)', 'number'],
+    ['economy_price', 'Economy Price (₱)', 'number'],
 ];
-
-// current airline id from session
+$values = [
+    'auid' => $_SESSION['user_id'] ?? null,
+    'frid' => $frid,
+];
 $currentAirlineId = $_SESSION['aid'] ?? null;
 ?>
 
@@ -37,14 +40,15 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
         </header>
 
         <div class="d-flex flex-grow-1 w-100 overflow-hidden">
+            <!-- Sidebar Filter -->
             <aside class="bg-light border-end ps-2" style="width: 280px; flex-shrink: 0;">
                 <div class="card shadow-sm mx-2 my-3">
                     <div class="card-body p-3">
                         <?php
                         include __DIR__ . '/../../airline/partials/filter.php';
-                        
+
                         renderFilterSidebar("/airline/flight-routes/schedules?frid=$frid", [
-                            ['name' => 'frid','label' => 'frid', 'type' => 'hidden', 'value' => $frid],
+                            ['name' => 'frid', 'label' => 'frid', 'type' => 'hidden', 'value' => $frid],
                             [
                                 'name' => 'status',
                                 'label' => 'Status',
@@ -61,18 +65,18 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                             ['name' => 'date_arrival_from', 'label' => 'Arrival From', 'type' => 'date'],
                             ['name' => 'date_arrival_to', 'label' => 'Arrival To', 'type' => 'date'],
                         ]);
-                        
                         ?>
-                        
                     </div>
                 </div>
             </aside>
 
+
+            <!-- Main Content -->
             <main class="flex-grow-1 p-4 w-100 d-flex flex-column overflow-hidden" style="min-width:0;">
                 <?php include __DIR__ . '/../../airline/partials/flash.php'; ?>
-                <div class="content-header d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0"><i class="bi bi-clock-history me-1"></i>Flight Schedules</h2>
 
+                <div class="content-header d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="mb-0"><i class="bi bi-clock-history me-1"></i>Flight Schedules</h2>
                     <?php if ($currentAirlineId): ?>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addScheduleModal">
                             <i class="bi bi-plus-circle me-2"></i>Add Schedule
@@ -80,18 +84,34 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                     <?php endif; ?>
                 </div>
 
+                <!-- Airline & Route Info below H2 -->
+                <?php if (!empty($schedules)): ?>
+                    <?php $first = $schedules[0]; ?>
+                    <div class="mb-3">
+                        <h5 class="mb-1"><?= htmlspecialchars($first['airline_name']) ?></h5>
+                        <p class="mb-0 small">
+                            <strong>Route:</strong>
+                            <?= htmlspecialchars($first['origin_airport']) ?>
+                            (<?= htmlspecialchars($first['origin_iata']) ?>)
+                            → <?= htmlspecialchars($first['destination_airport']) ?>
+                            (<?= htmlspecialchars($first['destination_iata']) ?>)
+                        </p>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Table Card -->
                 <div class="card shadow-sm w-100 flex-grow-1 d-flex flex-column overflow-hidden">
                     <div class="card-body p-0 overflow-hidden d-flex flex-column">
                         <div class="table-responsive flex-grow-1">
                             <table class="table table-hover table-striped align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Airline</th>
-                                        <th>Origin</th>
-                                        <th>Destination</th>
                                         <th>Departure</th>
                                         <th>Arrival</th>
                                         <th>Status</th>
+                                        <th>First Class</th>
+                                        <th>Business</th>
+                                        <th>Economy</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -99,11 +119,6 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                                     <?php if (!empty($schedules)): ?>
                                         <?php foreach ($schedules as $row): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($row['airline_name'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($row['origin_airport'] ?? '') ?>
-                                                    (<?= htmlspecialchars($row['origin_iata'] ?? '') ?>)</td>
-                                                <td><?= htmlspecialchars($row['destination_airport'] ?? '') ?>
-                                                    (<?= htmlspecialchars($row['destination_iata'] ?? '') ?>)</td>
                                                 <td><?= htmlspecialchars($row['date_departure'] ?? '') ?>
                                                     <?= htmlspecialchars($row['time_departure'] ?? '') ?>
                                                 </td>
@@ -111,6 +126,9 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                                                     <?= htmlspecialchars($row['time_arrival'] ?? '') ?>
                                                 </td>
                                                 <td><?= htmlspecialchars(ucfirst($row['status'] ?? '')) ?></td>
+                                                <td>₱<?= number_format($row['first_price'], 2) ?></td>
+                                                <td>₱<?= number_format($row['business_price'], 2) ?></td>
+                                                <td>₱<?= number_format($row['economy_price'], 2) ?></td>
                                                 <td>
                                                     <?php if ($row['airline_id'] == $currentAirlineId): ?>
                                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
@@ -124,9 +142,13 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
+                                                        <a href="/airline/flight-routes/seats?fid=<?= $row['id'] ?>"
+                                                            class="btn btn-sm btn-outline-warning">
+                                                            <i class="bi bi-ticket"></i>
+                                                        </a>
 
                                                         <?php
-                                                        // Edit modal (only if same airline)
+                                                        // Edit modal
                                                         $modalId = "editScheduleModal_" . $row['id'];
                                                         $title = "Edit Flight Schedule";
                                                         $action = "/airline/flight-routes/schedules/update";
@@ -138,6 +160,9 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                                                             'date_arrival' => $row['date_arrival'],
                                                             'time_arrival' => $row['time_arrival'],
                                                             'status' => $row['status'],
+                                                            'first_price' => $row['first_price'],
+                                                            'business_price' => $row['business_price'],
+                                                            'economy_price' => $row['economy_price'],
                                                         ];
                                                         include __DIR__ . '/../../admin/partials/modal_form.php';
                                                         ?>
@@ -170,6 +195,7 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
                     </div>
                 </div>
             </main>
+
         </div>
 
         <!-- Add Schedule Modal -->
@@ -179,7 +205,7 @@ $currentAirlineId = $_SESSION['aid'] ?? null;
             $title = "Add Flight Schedule";
             $action = "/airline/flight-routes/schedules/store";
             $fields = $scheduleFields;
-            $values = ['frid' => $frid];  // Make sure frid is set here
+            $values = ['frid' => $frid];
             include __DIR__ . '/../../airline/partials/modal_form.php';
             ?>
         <?php endif; ?>

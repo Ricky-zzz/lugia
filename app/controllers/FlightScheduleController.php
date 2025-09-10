@@ -2,34 +2,38 @@
 
 class FlightScheduleController extends Controller
 {
+    private $pdo;
     private $flightScheduleModel;
     private $flightRouteModel;
     private $airlineUserModel;
     private $airlineModel;
     private $airportModel;
     private $aircraftModel;
+    private $seatService;
 
     public function __construct()
     {
-        global $db; // from config.php
+        global $db; 
+        $this->pdo = $db;
         $this->flightScheduleModel = new FlightSchedule($db);
         $this->flightRouteModel = new FlightRoute($db);
         $this->airlineUserModel = new AirlineUser($db);
         $this->airlineModel = new Airline($db);
         $this->airportModel = new Airport($db);
         $this->aircraftModel = new Aircraft($db);
+        $this->seatService = new SeatService($this->pdo);
     }
 
     /** List all flight schedules with filters + pagination */
     public function index()
     {
-        // Build filters from GET
+      
         $filters = [];
 
-        // Exact or partial match filters
+ 
         $searchParams = [
             'id' => 'id',
-            'schedule_user' => 'schedule_user', // partial match
+            'schedule_user' => 'schedule_user',
             'frid' => 'frid',
             'status' => 'status',
             'date_departure_from' => 'date_departure_from',
@@ -76,8 +80,12 @@ class FlightScheduleController extends Controller
             'time_departure' => $_POST['time_departure'] ?? null,
             'date_arrival' => $_POST['date_arrival'] ?? null,
             'time_arrival' => $_POST['time_arrival'] ?? null,
-            'status' => $_POST['status'] ?? 'scheduled'
+            'status' => $_POST['status'] ?? 'scheduled',
+            'first_price' => $_POST['first_price'] ?? null,
+            'business_price' => $_POST['business_price'] ?? null,
+            'economy_price' => $_POST['economy_price'] ?? null
         ];
+
 
         $this->flightScheduleModel->create($data);
         Flash::set('success', 'Flight schedule created successfully!');
@@ -99,8 +107,12 @@ class FlightScheduleController extends Controller
             'time_departure' => $_POST['time_departure'] ?? null,
             'date_arrival' => $_POST['date_arrival'] ?? null,
             'time_arrival' => $_POST['time_arrival'] ?? null,
-            'status' => $_POST['status'] ?? 'scheduled'
+            'status' => $_POST['status'] ?? 'scheduled',
+            'first_price' => $_POST['first_price'] ?? null,
+            'business_price' => $_POST['business_price'] ?? null,
+            'economy_price' => $_POST['economy_price'] ?? null
         ];
+
 
         $this->flightScheduleModel->update($id, $data);
         Flash::set('success', 'Flight schedule updated successfully!');
@@ -120,4 +132,29 @@ class FlightScheduleController extends Controller
         header("Location: /admin/flight-schedules");
         exit;
     }
+
+    public function viewSeats()
+    {
+        $fid = $_GET['fid'] ?? null;
+        if (!$fid)
+            die("Missing flight ID");
+
+        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $limit = 15; // seats per page
+        $offset = ($page - 1) * $limit;
+
+        $seatService = new SeatService($this->pdo);
+        $allSeats = $seatService->getSeatsBySchedule((int) $fid);
+
+        // Paginate array manually
+        $seats = array_slice($allSeats, $offset, $limit);
+        $totalSeats = count($allSeats);
+        $totalPages = ceil($totalSeats / $limit);
+
+        $scheduleModel = new FlightSchedule($this->pdo);
+        $schedule = $scheduleModel->find((int) $fid);
+
+        require __DIR__ . '/../views/admin/flightschedules/seats.php';
+    }
 }
+

@@ -19,33 +19,31 @@ class AirlineFlightRouteController extends Controller
     /** List airline user's flight routes */
     public function index()
     {
+        $aid = $_SESSION['aid'] ?? null;
+        if (!$aid) {
+            die("Unauthorized: No airline logged in");
+        }
+
+        // Always filter by logged-in airline
         $filters = [
-            'id' => $_GET['id'] ?? '',   // ✅ added this
-            'aid' => $_GET['aid'] ?? '',
+            'aid' => $aid,
+            'id' => $_GET['id'] ?? '',
             'oapid' => $_GET['oapid'] ?? '',
             'dapid' => $_GET['dapid'] ?? '',
             'acid' => $_GET['acid'] ?? '',
             'round_trip' => $_GET['round_trip'] ?? ''
         ];
 
-
-        // Get all routes without pagination first
         $routes = $this->flightRouteModel->all($filters);
-
-        // Debug output
-        echo "<!-- Debug: Number of routes found: " . count($routes) . " -->\n";
-        echo "<!-- Debug: SQL Query: " . $this->flightRouteModel->getLastQuery() . " -->\n";
-
         $total = $this->flightRouteModel->count($filters);
-        echo "<!-- Debug: Total count: " . $total . " -->\n";
 
-        // dropdown data
         $airlines = $this->airlineModel->all();
         $airports = $this->airportModel->all();
         $aircrafts = $this->aircraftModel->all();
 
         require __DIR__ . '/../views/airline/flightroutes/index.php';
     }
+
 
     /** Store new route */
     public function store()
@@ -70,13 +68,15 @@ class AirlineFlightRouteController extends Controller
     public function update()
     {
         $id = $_POST['id'] ?? $_GET['id'] ?? null;
-        if (!$id) die("Missing ID");
+        if (!$id)
+            die("Missing ID");
 
         $route = $this->flightRouteModel->find($id);
         $aid = $_SESSION['aid'] ?? null;
 
         // Restrict to same airline
-        if ($route['aid'] != $aid) die("Unauthorized action");
+        if ($route['aid'] != $aid)
+            die("Unauthorized action");
 
         $data = [
             'oapid' => $_POST['oapid'] ?? null,
@@ -95,12 +95,14 @@ class AirlineFlightRouteController extends Controller
     public function destroy()
     {
         $id = $_GET['id'] ?? null;
-        if (!$id) die("Missing ID");
+        if (!$id)
+            die("Missing ID");
 
         $route = $this->flightRouteModel->find($id);
         $aid = $_SESSION['aid'] ?? null;
 
-        if ($route['aid'] != $aid) die("Unauthorized action");
+        if ($route['aid'] != $aid)
+            die("Unauthorized action");
 
         $this->flightRouteModel->delete($id);
         Flash::set('success', 'Flight route deleted successfully!');

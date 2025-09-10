@@ -67,6 +67,7 @@ $router->get('/admin/flight-schedules', [FlightScheduleController::class, 'index
 $router->post('/admin/flight-schedules/store', [FlightScheduleController::class, 'store']);
 $router->post('/admin/flight-schedules/update', [FlightScheduleController::class, 'update']);
 $router->post('/admin/flight-schedules/delete', [FlightScheduleController::class, 'destroy']);
+$router->get('/admin/flight-schedules/seats', [FlightScheduleController::class, 'viewSeats']);
 
 // Airline User Dashboard
 $router->get('/airline/dashboard', [AirlineUserController::class, 'dashboard']);
@@ -83,6 +84,8 @@ $router->get('/airline/flight-routes/schedules', [RouteScheduleController::class
 $router->post('/airline/flight-routes/schedules/store', [RouteScheduleController::class, 'store']);
 $router->post('/airline/flight-routes/schedules/update', [RouteScheduleController::class, 'update']);
 $router->post('/airline/flight-routes/schedules/delete', [RouteScheduleController::class, 'destroy']);
+$router->get('/airline/flight-routes/seats', [RouteScheduleController::class, 'viewSeats']);
+
 
 // Flight Schedules (Airline User)
 // $router->get('/airline/flight-schedules', [AFScheduleController::class, 'index']);

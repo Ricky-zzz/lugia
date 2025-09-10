@@ -29,10 +29,10 @@ class AirlineUserController extends Controller
         $total = $this->airlineUserModel->count($filters);
         $pages = ceil($total / $perPage);
 
-        // ✅ fetch airlines for dropdown
+
         $airlines = $this->airlineModel->all();
 
-        // ✅ pass data to view
+
         $airlineUsers = $users;
         require __DIR__ . '/../views/admin/airlineusers/index.php';
     }

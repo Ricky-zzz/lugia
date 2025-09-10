@@ -6,7 +6,8 @@ $current = $_SERVER['REQUEST_URI'];
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <!-- Brand -->
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">Lugia</a>
+
+        <a class="navbar-brand fw-bold" href="/admin/dashboard"><img src="/assets/imgs/logo.png" alt="Lugia" height="50">LUGIA</a>
 
         <!-- Toggler for mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
